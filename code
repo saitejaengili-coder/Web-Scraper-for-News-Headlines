@@ -1,0 +1,30 @@
+import requests
+from bs4 import BeautifulSoup
+
+# News website URL
+url = "https://news.ycombinator.com/"
+
+# Send request
+response = requests.get(url)
+
+# Check if request was successful
+if response.status_code == 200:
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Find headlines
+    headlines = soup.find_all("span", class_="titleline")
+
+    # Save headlines to a text file
+    with open("headlines.txt", "w", encoding="utf-8") as file:
+        file.write("Top News Headlines\n")
+        file.write("=" * 40 + "\n\n")
+
+        for i, headline in enumerate(headlines, start=1):
+            title = headline.get_text(strip=True)
+            file.write(f"{i}. {title}\n")
+            print(f"{i}. {title}")
+
+    print("\nHeadlines saved successfully in headlines.txt")
+
+else:
+    print("Failed to fetch the webpage.")
